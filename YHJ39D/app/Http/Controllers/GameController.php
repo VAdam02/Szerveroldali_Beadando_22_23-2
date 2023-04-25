@@ -12,10 +12,10 @@ class GameController extends Controller
         return view('game.index');
     }
 
+    
     public function games()
     {
-        $games = Game::with('homeTeam', 'awayTeam', 'events.player', 'events.player.team')->get();
-
+        $games = Game::with('homeTeam', 'awayTeam', 'events.player', 'events.player.team')->orderByDesc('start')->get();
         foreach ($games as $game)
         {
             $game->homeTeamScore = $game->events->filter(function ($event) use ($game) {

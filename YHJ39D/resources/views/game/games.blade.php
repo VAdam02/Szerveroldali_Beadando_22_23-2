@@ -21,29 +21,27 @@
 
 <h2>Elkövetkező és már lezárult meccsek</h2>
 @foreach ($notActiveGames as $game)
-    @if ($game->start > Carbon\Carbon::now() || $game->finished)
-        <table class="game">
-            <tr>
-                <td rowspan="2"><img src="{{ $game->homeTeam->image }}" alt="{{ $game->homeTeam->name }}"></td>
-                <td>Kezdés: {{ $game->start }}</td>
-                <td rowspan="2"><img src="{{ $game->awayTeam->name }}" alt="{{ $game->awayTeam->name }}"></td>
-            </tr>
-            <tr>
-                <td>
-                    @if ( $game->finished)
-                        Eredmény:
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <td>{{ $game->homeTeam->shortname }}</td>
-                <td>
-                    @if ( $game->finished)
-                    {{ $game->homeTeamScore }} : {{ $game->awayTeamScore }}
-                    @endif
-                </td>
-                <td>{{ $game->awayTeam->shortname }}</td>
-            </tr>
-        </table>
-    @endif
+    <table class="game">
+        <tr>
+            <td rowspan="2"><img src="{{ $game->homeTeam->image }}" alt="{{ $game->homeTeam->name }}"></td>
+            <td>Kezdés: {{ $game->start }}</td>
+            <td rowspan="2"><img src="{{ $game->awayTeam->image }}" alt="{{ $game->awayTeam->name }}"></td>
+        </tr>
+        <tr>
+            <td>
+                @if ( $game->finished)
+                    Eredmény:
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td>{{ $game->homeTeam->shortname }}</td>
+            <td>
+                @if ( $game->finished)
+                {{ $game->homeTeamScore }} : {{ $game->awayTeamScore }}
+                @endif
+            </td>
+            <td>{{ $game->awayTeam->shortname }}</td>
+        </tr>
+    </table>
 @endforeach
