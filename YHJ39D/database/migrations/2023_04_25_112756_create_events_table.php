@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('games', function (Blueprint $table) {
+        Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('start');
-            $table->boolean('finished')->default(false);
+            $table->enum('type', ['goal', 'own_goal', 'yellow_card', 'red_card']);
+            $table->integer('minute');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('games');
+        Schema::dropIfExists('events');
     }
 };
