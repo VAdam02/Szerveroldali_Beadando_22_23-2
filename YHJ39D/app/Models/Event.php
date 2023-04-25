@@ -9,6 +9,11 @@ class Event extends Model
 {
     use HasFactory;
 
+    public function game()
+    {
+        return $this->belongsTo(Game::class);
+    }
+
     public function player()
     {
         return $this->belongsTo(Player::class);

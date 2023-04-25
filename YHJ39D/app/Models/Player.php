@@ -14,8 +14,8 @@ class Player extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function events()
+    public function event()
     {
-        return $this->belongsToMany(Event::class);
+        return $this->hasMany(Event::class);
     }
 }

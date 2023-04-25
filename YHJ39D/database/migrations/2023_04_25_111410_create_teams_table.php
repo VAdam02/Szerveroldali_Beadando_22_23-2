@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('shortname', 4)->unique();
             $table->string('image')->nullable();
-            //$table->foreignId('home_team_id')->constrained('teams')->onDelete('cascade');
-            //$table->foreignId('away_team_id')->constrained('teams')->onDelete('cascade');
             $table->timestamps();
         });
     }
