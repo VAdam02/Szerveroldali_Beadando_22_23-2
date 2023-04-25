@@ -26,45 +26,47 @@ class DatabaseSeeder extends Seeder
         }
 
         $players = collect();
-        $playerCount = rand(100, 200);
-        for ($i = 1; $i <= $playerCount; $i++)
+        foreach ($teams as $team)
         {
-            $player = Player::factory()->create();
-            $player->team()->associate($teams->random());
-            $players->add($player);
-        }
-
-        /*
-        $events = collect();
-        $eventCount = rand(200, 500);
-        for ($i = 1; $i <= $eventCount; $i++)
-        {
-            $event = Event::factory()->create();
-            $events->add($event);
+            $playerCount = 11;
+            for ($i = 1; $i <= $playerCount; $i++)
+            {
+                $player = Player::factory()->create([
+                    'team_id' => $team->id
+                ]);
+                $player->team()->associate($team);
+                $players->add($player);
+            }
         }
 
         $games = collect();
-        $gameCount = rand(20, 30);
+        $gameCount = rand(100, 300);
         for ($i = 1; $i <= $gameCount; $i++)
         {
-            $game = Game::factory()->create();
+            $team1 = $teams->random();
+            $team2 = $teams->random();
+            $game = Game::factory()->create([
+                'home_team_id' => $team1->id,
+                'away_team_id' => $team2->id
+            ]);
             $games->add($game);
         }
 
-        $players = collect();
-        $playerCount = rand(100, 200);
-        for ($i = 1; $i <= $playerCount; $i++)
+        $events = collect();
+        foreach ($games as $game)
         {
-            $player = Player::factory()->create();
-            $players->add($player);
-        }
-
-        $teams = collect();
-        $teamCount = rand(10, 20);
-        for ($i = 1; $i <= $teamCount; $i++)
-        {
-            $team = Team::factory()->create();
-            $teams->add($team);
+            $eventCount = rand(10, 20);
+            for ($i = 1; $i <= $eventCount; $i++)
+            {
+                $player = $players->random();
+                $event = Event::factory()->create([
+                    'player_id' => $player->id,
+                    'game_id' => $game->id
+                ]);
+                $event->game()->associate($game);
+                $event->player()->associate($player);
+                $events->add($event);
+            }
         }
 
         $users = collect();
@@ -76,6 +78,21 @@ class DatabaseSeeder extends Seeder
             ]);
             $users->add($user);
         }
-        */
+
+        $users->add(User::factory()->create([
+            'email' => 'admin@szerveroldali.hu',
+            'is_admin' => true,
+            'password' => bcrypt('adminpwd')
+        ]));
+
+        foreach ($users as $user)
+        {
+            $teamCount = rand(0, 10);
+            for ($i = 1; $i <= $teamCount; $i++)
+            {
+                $team = $teams->random();
+                $user->teams()->attach($team);
+            }
+        }
     }
 }

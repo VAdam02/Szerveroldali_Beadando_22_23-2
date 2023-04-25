@@ -15,7 +15,6 @@ class GameController extends Controller
     public function games()
     {
         $games = Game::all();
-        //$games = [];
         return view('game.games', ['games' => $games]);
     }
 }

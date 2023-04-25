@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Event>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User_Team>
  */
-class EventFactory extends Factory
+class UserTeamFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,8 +17,7 @@ class EventFactory extends Factory
     public function definition(): array
     {
         return [
-            'type' => fake()->randomElement(['goal', 'own_goal', 'yellow_card', 'red_card']),
-            'minute' => fake()->numberBetween($min = 1, $max = 90),
+            //
         ];
     }
 }
