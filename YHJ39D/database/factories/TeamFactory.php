@@ -16,10 +16,14 @@ class TeamFactory extends Factory
      */
     public function definition(): array
     {
+        
+        $teamname = fake()->unique()->company;
+        $shortname = substr($teamname, 0, 2) . fake()->unique()->numberBetween(0, 99);
+
         return [
-            'TeamLogo' => $this->faker->imageUrl($width = 100, $height = 100, 'cats', true, 'Faker'),
-            'TeamName' => $this->faker->company,
-            'TeamShortName' => $this->faker->companySuffix,
+            'name' => $teamname,
+            'shortname' => $shortname,
+            'image' => fake()->imageUrl($width = 100, $height = 100, 'cats', true, 'Faker'),
         ];
     }
 }

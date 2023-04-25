@@ -17,11 +17,8 @@ class GameFactory extends Factory
     public function definition(): array
     {
         return [
-            'start' => $this->faker->dateTimeBetween($startDate = '-1 years', $endDate = '+1 years', $timezone = null),
-            'finished' => $this->faker->boolean($chanceOfGettingTrue = 50),
-
-            'HomeTeamScore' => $this->faker->numberBetween($min = 0, $max = 10),
-            'AwayTeamScore' => $this->faker->numberBetween($min = 0, $max = 10)
+            'start' => fake()->dateTimeBetween($startDate = '-1 years', $endDate = '+1 years', $timezone = null),
+            'finished' => fake()->boolean($chanceOfGettingTrue = 50),
         ];
     }
 }
