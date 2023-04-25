@@ -58,7 +58,16 @@ class DatabaseSeeder extends Seeder
             $eventCount = rand(10, 20);
             for ($i = 1; $i <= $eventCount; $i++)
             {
-                $player = $players->random();
+                //select a random player from $game->homeTeam or $game->awayTeam
+                if (rand(0,2) == 0)
+                {
+                    $player = $players->where('team_id', $game->home_team_id)->random();
+                }
+                else
+                {
+                    $player = $players->where('team_id', $game->away_team_id)->random();
+                }
+
                 $event = Event::factory()->create([
                     'player_id' => $player->id,
                     'game_id' => $game->id
