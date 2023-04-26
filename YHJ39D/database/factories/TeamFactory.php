@@ -23,7 +23,7 @@ class TeamFactory extends Factory
         return [
             'name' => $teamname,
             'shortname' => $shortname,
-            'image' => fake()->imageUrl($width = 100, $height = 100, $teamname),
+            'image' => fake()->optional(0.9)->imageUrl($width = 100, $height = 100, $teamname),
         ];
     }
 }

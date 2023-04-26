@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Models\Game;
 
 class GameController extends Controller
@@ -15,8 +16,11 @@ class GameController extends Controller
     
     public function games()
     {
-        $games = Game::with('homeTeam', 'awayTeam', 'events.player', 'events.player.team')->orderByDesc('start')->get();
-        foreach ($games as $game)
+        $current_time = Carbon::now();
+        $activeGames = Game::where('finished', '=', false)->where('start', '<', $current_time)->with('homeTeam', 'awayTeam', 'events.player', 'events.player.team')->orderByDesc('start')->get();
+        $notActiveGames = Game::where('finished', '=', true)->orWhere('start', '>', $current_time)->with('homeTeam', 'awayTeam', 'events.player', 'events.player.team')->orderByDesc('start')->paginate(10);
+
+        foreach ($activeGames as $game)
         {
             $game->homeTeamScore = $game->events->filter(function ($event) use ($game) {
                 return $event->player->team->id == $game->home_team_id && $event->type == "goal"
@@ -27,15 +31,20 @@ class GameController extends Controller
                 return $event->player->team->id == $game->away_team_id && $event->type == "goal"
                     || $event->player->team->id == $game->home_team_id && $event->type == "owngoal";
             })->count();
-            
         }
 
-        $activeGames = $games->filter(function ($game) {
-            return $game->finished == false && $game->start < now();
-        });
-        $notActiveGames = $games->filter(function ($game) {
-            return $game->finished == true || $game->start > now();
-        });
+        foreach ($notActiveGames as $game)
+        {
+            $game->homeTeamScore = $game->events->filter(function ($event) use ($game) {
+                return $event->player->team->id == $game->home_team_id && $event->type == "goal"
+                    || $event->player->team->id == $game->away_team_id && $event->type == "owngoal";
+            })->count();
+
+            $game->awayTeamScore = $game->events->filter(function ($event) use ($game) {
+                return $event->player->team->id == $game->away_team_id && $event->type == "goal"
+                    || $event->player->team->id == $game->home_team_id && $event->type == "owngoal";
+            })->count();
+        }
 
         return view('game.games', ['activeGames' => $activeGames, 'notActiveGames' => $notActiveGames]);
     }
