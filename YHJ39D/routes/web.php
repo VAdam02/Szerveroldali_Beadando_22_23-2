@@ -16,4 +16,7 @@ use App\Http\Controllers\GameController;
 
 Route::get('/', [GameController::class, 'index']);
 
-Route::get('/games', [GameController::class, 'games'])->name('games');
+Route::resource('games', GameController::class);
+
+Route::get('/list', [GameController::class, 'list'])->name('list');
+Route::get('/show', [GameController::class, 'show'])->name('show');

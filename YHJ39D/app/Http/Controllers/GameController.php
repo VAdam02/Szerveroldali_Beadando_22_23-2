@@ -13,8 +13,13 @@ class GameController extends Controller
         return view('game.index');
     }
 
+    public function show(Game $game)
+    {
+        return view('game.show', ['game' => $game]);
+    }
+
     
-    public function games()
+    public function list()
     {
         $current_time = Carbon::now();
         $activeGames = Game::where('finished', '=', false)->where('start', '<', $current_time)->with('homeTeam', 'awayTeam', 'events.player', 'events.player.team')->orderByDesc('start')->get();
@@ -46,7 +51,7 @@ class GameController extends Controller
             })->count();
         }
 
-        return view('game.games', ['activeGames' => $activeGames, 'notActiveGames' => $notActiveGames]);
+        return view('game.list', ['activeGames' => $activeGames, 'notActiveGames' => $notActiveGames]);
     }
 }
 

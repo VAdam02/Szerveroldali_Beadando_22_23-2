@@ -7,7 +7,7 @@
     @foreach ($activeGames as $game)
         <table class="mx-auto border border-gray-400 col-span-3 lg:col-span-1">
             <tr>
-                <td rowspan="2" class="text-center">
+                <td rowspan="3" class="text-center">
                     @if ($game->homeTeam->image == null)
                         <img style="width: 100px; height: 100px" src="https://via.placeholder.com/150" alt="{{ $game->homeTeam->name }}">
                     @else
@@ -15,7 +15,7 @@
                     @endif
                 </td>
                 <td>Kezdés: {{ $game->start }}</td>
-                <td rowspan="2" class="text-center">
+                <td rowspan="3" class="text-center">
                     @if ($game->awayTeam->image == null)
                         <img style="width: 100px; height: 100px" src="https://via.placeholder.com/150" alt="{{ $game->homeTeam->name }}">
                     @else
@@ -27,8 +27,13 @@
                 <td class="text-center">Aktuális eredmény:</td>
             </tr>
             <tr>
-                <td class="text-center">{{ $game->homeTeam->shortname }}</td>
+                
                 <td class="text-center">{{ $game->homeTeamScore }} : {{ $game->awayTeamScore }}</td>
+                
+            </tr>
+            <tr>
+                <td class="text-center">{{ $game->homeTeam->shortname }}</td>
+                <td class="text-center"><a href="{{ route('games.show', ['game' => $game]) }}">Megtekintés</a></td>
                 <td class="text-center">{{ $game->awayTeam->shortname }}</td>
             </tr>
         </table>
