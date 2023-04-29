@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +18,9 @@ use App\Http\Controllers\GameController;
 Route::get('/', [GameController::class, 'index'])->name('home');
 
 Route::resource('games', GameController::class);
-
 Route::get('/list', [GameController::class, 'list'])->name('list');
+
+Route::post('/events', [EventController::class, 'create'])->name('events.create');
 
 Auth::routes();
 

@@ -30,4 +30,10 @@
             </div>
             @endforeach
         </div>
+        
+        <div class="mt-6 lg:grid lg:grid-cols-3 lg:gap-6">
+            <div class="lg:col-span-3">
+                {{ $slot }}
+            </div>
+        </div>
 </x-noGames-layout>

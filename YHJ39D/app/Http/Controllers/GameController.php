@@ -8,7 +8,7 @@ use App\Models\Game;
 
 class GameController extends Controller
 {
-    public function getActiveGames()
+    public function activeGames()
     {
         $current_time = Carbon::now();
         $activeGames = Game::where('finished', '=', false)->where('start', '<', $current_time)->with('homeTeam', 'awayTeam', 'events.player', 'events.player.team')->orderByDesc('start')->get();
@@ -27,16 +27,22 @@ class GameController extends Controller
         return $activeGames;
     }
 
+    public function players(Game $game)
+    {
+        $players = $game->homeTeam->players->merge($game->awayTeam->players);
+        return $players;
+    }
+
     public function index()
     {
-        $activeGames = $this->getActiveGames();
+        $activeGames = $this->activeGames();
 
         return view('game.index', ['activeGames' => $activeGames]);
     }
 
     public function show(Game $game)
     {
-        $activeGames = $this->getActiveGames();
+        $activeGames = $this->activeGames();
 
         $game->load('homeTeam', 'awayTeam', 'events.player', 'events.player.team');
         $game->homeTeamScore = $game->events->filter(function ($event) use ($game) {
@@ -49,14 +55,14 @@ class GameController extends Controller
                 || $event->player->team->id == $game->home_team_id && $event->type == "öngól";
         })->count();
 
-        return view('game.show', ['game' => $game, 'activeGames' => $activeGames]);
+        return view('game.show', ['games' => $this, 'game' => $game, 'activeGames' => $activeGames]);
     }
 
     
     public function list()
     {
         $current_time = Carbon::now();
-        $activeGames = $this->getActiveGames();
+        $activeGames = $this->activeGames();
         $notActiveGames = Game::where('finished', '=', true)->orWhere('start', '>', $current_time)->with('homeTeam', 'awayTeam', 'events.player', 'events.player.team')->orderByDesc('start')->paginate(10);
 
         foreach ($notActiveGames as $game)

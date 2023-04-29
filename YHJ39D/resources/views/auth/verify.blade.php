@@ -1,7 +1,7 @@
 <x-noGames-layout>
     <div class="container mx-auto">
         <h2 class="text-xl font-bold mb-4">{{ __('Verify Your Email Address') }}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <div class="shadow-md rounded-md p-4 bg-gray-100">
                 @if (session('resent'))
                     <div class="alert alert-success" role="alert">
