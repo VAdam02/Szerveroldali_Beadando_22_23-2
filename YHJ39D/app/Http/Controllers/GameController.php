@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use App\Models\Game;
 
@@ -58,6 +59,19 @@ class GameController extends Controller
         return view('game.show', ['games' => $this, 'game' => $game, 'activeGames' => $activeGames]);
     }
 
+    public function finish(Game $game)
+    {
+        if ($game->finished)
+        {
+            Session::flash('error', 'A mérkőzés már lezárásra került');
+            return redirect()->route('games.show', ['game' => $game]);
+        }
+        
+        $game->finished = true;
+        $game->save();
+        Session::flash('success', 'A mérkőzés sikeresen lezárva');
+        return redirect()->route('games.show', ['game' => $game]);
+    }
     
     public function list()
     {

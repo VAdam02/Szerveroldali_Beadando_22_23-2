@@ -2,30 +2,37 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Session;
 use App\Models\Event;
+use App\Models\Game;
+use App\Rules\PlayerIsInGame;
 
 class EventController extends Controller
 {
     public function create(Request $request)
     {
+        $activeGameIds = app(GameController::class)->activeGames()->pluck('id')->toArray();
+
         $validate = $request->validate([
             'minute' => 'required|integer|min:1|max:90',
-            'player_id' => 'required|exists:players,id',
-            'game_id' => 'required|exists:games,id',
+            'game_id' => ['required', 'integer', Rule::in($activeGameIds)],
+            'player_id' => ['required', 'integer', new PlayerIsInGame($request)],
             'type' => 'required|in:gól,öngól,sárga lap,piros lap',
-        ],
-        [
+        ], [
             'minute.required' => 'A perc megadása kötelező!',
             'minute.integer' => 'A perc csak szám lehet!',
             'minute.min' => 'A perc nem lehet kisebb, mint 1!',
             'minute.max' => 'A perc nem lehet nagyobb, mint 90!',
             'player_id.required' => 'A játékos kiválasztása kötelező!',
-            'player_id.exists' => 'A kiválasztott játékos nem létezik!',
+            'player_id.exists' => 'A kiválasztott játékos nem létezik vagy nem játszik a mérkőzésen!',
             'game_id.required' => 'A mérkőzés kiválasztása kötelező!',
             'game_id.exists' => 'A kiválasztott mérkőzés nem létezik!',
+            'game_id.in' => 'A kiválasztott mérkőzés nem aktív!',
             'type.required' => 'A típus kiválasztása kötelező!',
             'type.in' => 'A kiválasztott típus nem létezik!',
         ]);
+
         $event = new Event();
         $event->minute = $request->minute;
         $event->game_id = $request->game_id;
@@ -34,6 +41,20 @@ class EventController extends Controller
         $event->game()->associate($request->game_id);
         $event->player()->associate($request->player_id);
         $event->save();
-        return redirect()->route('games.show', ['game' => $request->game_id])->with('success', 'Esemény sikeresen létrehozva!');
+        Session::flash('success', 'Esemény sikeresen létrehozva!');
+        return redirect()->route('games.show', ['game' => $request->game_id]);
+    }
+
+    public function destroy(Event $event)
+    {
+        $this->authorize('delete', $event);
+        if ($event->game->finished) {
+            Session::flash('error', 'A mérkőzés véget ért, nem lehet eseményt törölni!');
+            return redirect()->route('games.show', ['game' => $event->game_id]);
+        }
+
+        $event->delete();
+        Session::flash('success', 'Esemény sikeresen törölve!');
+        return redirect()->route('games.show', ['game' => $event->game_id]);
     }
 }
