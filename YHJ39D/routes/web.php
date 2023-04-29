@@ -20,6 +20,8 @@ Route::get('/', [GameController::class, 'index'])->name('home');
 Route::resource('games', GameController::class);
 Route::get('/list', [GameController::class, 'list'])->name('list');
 Route::post('/games/{game}/finish', [GameController::class, 'finish'])->name('games.finish');
+Route::get('/create', [GameController::class, 'create'])->name('create');
+Route::post('/games/create', [GameController::class, 'createGame'])->name('createGame');
 
 Route::post('/events', [EventController::class, 'create'])->name('events.create');
 Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');

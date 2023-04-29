@@ -34,7 +34,7 @@ class GamePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->is_admin;
     }
 
     /**

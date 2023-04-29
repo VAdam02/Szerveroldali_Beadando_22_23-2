@@ -19,16 +19,18 @@ class EventController extends Controller
             'player_id' => ['required', 'integer', new PlayerIsInGame($request)],
             'type' => 'required|in:gól,öngól,sárga lap,piros lap',
         ], [
-            'minute.required' => 'A perc megadása kötelező!',
-            'minute.integer' => 'A perc csak szám lehet!',
-            'minute.min' => 'A perc nem lehet kisebb, mint 1!',
-            'minute.max' => 'A perc nem lehet nagyobb, mint 90!',
-            'player_id.required' => 'A játékos kiválasztása kötelező!',
-            'player_id.exists' => 'A kiválasztott játékos nem létezik vagy nem játszik a mérkőzésen!',
-            'game_id.required' => 'A mérkőzés kiválasztása kötelező!',
-            'game_id.exists' => 'A kiválasztott mérkőzés nem létezik!',
-            'type.required' => 'A típus kiválasztása kötelező!',
-            'type.in' => 'A kiválasztott típus nem létezik!',
+            'minute.required' => 'A perc megadása kötelező',
+            'minute.integer' => 'Nem megfelelő formátun',
+            'minute.min' => 'A perc nem lehet kisebb, mint 1',
+            'minute.max' => 'A perc nem lehet nagyobb, mint 90',
+            'player_id.required' => 'A játékos kiválasztása kötelező',
+            'player_id.integer' => 'Nem megfelelő formátum',
+            'player_id.exists' => 'A kiválasztott játékos nem létezik vagy nem játszik a mérkőzésen',
+            'game_id.required' => 'A mérkőzés kiválasztása kötelező',
+            'game_id.integer' => 'Nem megfelelő formátum',
+            'game_id.exists' => 'A kiválasztott mérkőzés nem létezik',
+            'type.required' => 'A típus kiválasztása kötelező',
+            'type.in' => 'A kiválasztott típus nem létezik',
         ]);
 
         if (!(Auth::check() && Auth::user()->can('create', Event::class)))

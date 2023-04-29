@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Game;
+use App\Models\Team;
 
 class GameController extends Controller
 {
@@ -35,6 +36,14 @@ class GameController extends Controller
         return $players;
     }
 
+
+
+
+
+
+
+
+
     public function index()
     {
         $activeGames = $this->activeGames();
@@ -60,24 +69,15 @@ class GameController extends Controller
         return view('game.show', ['games' => $this, 'game' => $game, 'activeGames' => $activeGames]);
     }
 
-    public function finish(Game $game)
+    public function create()
     {
-        if (!(Auth::check() && Auth::user()->can('finish', $game)))
+        if (!(Auth::check() && Auth::user()->can('create', Game::class)))
         {
-            Session::flash('error', 'Nincs jogosultságod a mérkőzés lezárásához');
-            return redirect()->route('games.show', ['game' => $game]);
+            Session::flash('error', 'Nincs jogosultságod új mérkőzés létrehozásához');
+            return redirect()->route('home');
         }
 
-        if ($game->finished)
-        {
-            Session::flash('error', 'A mérkőzés már lezárásra került');
-            return redirect()->route('games.show', ['game' => $game]);
-        }
-
-        $game->finished = true;
-        $game->save();
-        Session::flash('success', 'A mérkőzés sikeresen lezárva');
-        return redirect()->route('games.show', ['game' => $game]);
+        return view('game.create', ['teams' => Team::all(), 'activeGames' => $this->activeGames()]);
     }
     
     public function list()
@@ -100,6 +100,69 @@ class GameController extends Controller
         }
 
         return view('game.list', ['activeGames' => $activeGames, 'notActiveGames' => $notActiveGames]);
+    }
+
+
+
+
+
+
+
+
+
+    public function finish(Game $game)
+    {
+        if (!(Auth::check() && Auth::user()->can('finish', $game)))
+        {
+            Session::flash('error', 'Nincs jogosultságod a mérkőzés lezárásához');
+            return redirect()->route('games.show', ['game' => $game]);
+        }
+
+        if ($game->finished)
+        {
+            Session::flash('error', 'A mérkőzés már lezárásra került');
+            return redirect()->route('games.show', ['game' => $game]);
+        }
+
+        $game->finished = true;
+        $game->save();
+        Session::flash('success', 'A mérkőzés sikeresen lezárva');
+        return redirect()->route('games.show', ['game' => $game]);
+    }
+
+    public function createGame(Request $request)
+    {   
+        if (!(Auth::check() && Auth::user()->can('create', Game::class)))
+        {
+            Session::flash('error', 'Nincs jogosultságod új mérkőzés létrehozásához');
+            return redirect()->route('home');
+        }
+
+        $request->validate([
+            'home_team_id' => 'required|integer|exists:teams,id',
+            'away_team_id' => 'required|integer|exists:teams,id|different:home_team_id',
+            'start' => 'required|date|after:now',
+        ],
+        [
+            'home_team_id.required' => 'A hazai csapat kiválasztása kötelező',
+            'home_team_id.integer' => 'Nem megfelelő formátum',
+            'home_team_id.exists' => 'Nincs ilyen csapat',
+            'away_team_id.required' => 'A vendég csapat kiválasztása kötelező',
+            'away_team_id.integer' => 'Nem megfelelő formátum',
+            'away_team_id.exists' => 'Nincs ilyen csapat',
+            'away_team_id.different' => 'A két csapat nem lehet azonos',
+            'start.required' => 'A kezdési időpont kiválasztása kötelező',
+            'start.date' => 'Nem megfelelő formátum',
+            'start.after' => 'A kezdési időpont nem lehet múlt'
+        ]);
+
+        $game = new Game();
+        $game->home_team_id = $request->home_team_id;
+        $game->away_team_id = $request->away_team_id;
+        $game->start = date('Y-m-d H:i:s', strtotime($request->start));
+        $game->save();
+        Session::flash('success', 'A mérkőzés sikeresen létrehozva');
+        return redirect()->route('games.show', ['game' => $game]);
     }
 }
 
