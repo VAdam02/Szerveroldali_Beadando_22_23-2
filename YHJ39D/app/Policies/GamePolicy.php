@@ -40,9 +40,9 @@ class GamePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Game $game): bool
+    public function edit(User $user, Game $game): bool
     {
-        //
+        return $user->is_admin;
     }
 
     /**
@@ -50,7 +50,7 @@ class GamePolicy
      */
     public function delete(User $user, Game $game): bool
     {
-        //
+        return $user->is_admin;
     }
 
     /**

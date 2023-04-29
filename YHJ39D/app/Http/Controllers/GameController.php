@@ -102,6 +102,17 @@ class GameController extends Controller
         return view('game.list', ['activeGames' => $activeGames, 'notActiveGames' => $notActiveGames]);
     }
 
+    public function edit(Game $game)
+    {
+        if (!(Auth::check() && Auth::user()->can('edit', $game)))
+        {
+            Session::flash('error', 'Nincs jogosultságod a mérkőzés szerkesztéséhez');
+            return redirect()->route('games.show', ['game' => $game]);
+        }
+
+        return view('game.edit', ['game' => $game, 'teams' => Team::all(), 'activeGames' => $this->activeGames()]);
+    }
+
 
 
 
@@ -163,6 +174,53 @@ class GameController extends Controller
         $game->save();
         Session::flash('success', 'A mérkőzés sikeresen létrehozva');
         return redirect()->route('games.show', ['game' => $game]);
+    }
+
+    public function editGame(Request $request, Game $game)
+    {
+        if (!(Auth::check() && Auth::user()->can('edit', $game)))
+        {
+            Session::flash('error', 'Nincs jogosultságod a mérkőzés szerkesztéséhez');
+            return redirect()->route('games.show', ['game' => $game]);
+        }
+
+        $request->validate([
+            'home_team_id' => 'required|integer|exists:teams,id',
+            'away_team_id' => 'required|integer|exists:teams,id|different:home_team_id',
+            'start' => 'required|date|after:now',
+        ],
+        [
+            'home_team_id.required' => 'A hazai csapat kiválasztása kötelező',
+            'home_team_id.integer' => 'Nem megfelelő formátum',
+            'home_team_id.exists' => 'Nincs ilyen csapat',
+            'away_team_id.required' => 'A vendég csapat kiválasztása kötelező',
+            'away_team_id.integer' => 'Nem megfelelő formátum',
+            'away_team_id.exists' => 'Nincs ilyen csapat',
+            'away_team_id.different' => 'A két csapat nem lehet azonos',
+            'start.required' => 'A kezdési időpont kiválasztása kötelező',
+            'start.date' => 'Nem megfelelő formátum',
+            'start.after' => 'A kezdési időpont nem lehet múlt'
+        ]);
+
+        $game->home_team_id = $request->home_team_id;
+        $game->away_team_id = $request->away_team_id;
+        $game->start = date('Y-m-d H:i:s', strtotime($request->start));
+        $game->save();
+        Session::flash('success', 'A mérkőzés sikeresen szerkesztve');
+        return redirect()->route('games.show', ['game' => $game]);
+    }
+
+    public function destroy(Game $game)
+    {
+        if (!(Auth::check() && Auth::user()->can('delete', $game)))
+        {
+            Session::flash('error', 'Nincs jogosultságod a mérkőzés törléséhez');
+            return redirect()->route('games.show', ['game' => $game]);
+        }
+
+        $game->delete();
+        Session::flash('success', 'A mérkőzés sikeresen törölve');
+        return redirect()->route('games.index');
     }
 }
 
