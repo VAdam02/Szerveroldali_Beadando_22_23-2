@@ -22,4 +22,4 @@ Route::get('/list', [GameController::class, 'list'])->name('list');
 
 Auth::routes();
 
-Route::get('/home', [GameController::class, 'index'])->name('home');
+Route::get('/home', [GameController::class, 'index']);
