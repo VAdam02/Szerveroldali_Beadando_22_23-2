@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('player_id')->constrained('players')->onDelete('cascade');
             $table->foreignId('game_id')->constrained('games')->onDelete('cascade');
-            $table->enum('type', ['goal', 'own_goal', 'yellow_card', 'red_card']);
+            $table->enum('type', ['gól', 'öngól', 'sárga lap', 'piros lap']);
             $table->integer('minute');
             $table->timestamps();
         });

@@ -14,9 +14,12 @@ use App\Http\Controllers\GameController;
 |
 */
 
-Route::get('/', [GameController::class, 'index']);
+Route::get('/', [GameController::class, 'index'])->name('home');
 
 Route::resource('games', GameController::class);
 
 Route::get('/list', [GameController::class, 'list'])->name('list');
-Route::get('/show', [GameController::class, 'show'])->name('show');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

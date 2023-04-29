@@ -1,8 +1,6 @@
-<h1>Fikcionális labdarúgó-bajnokság főoldala</h1>
-
-<a href="{{ route('games.list') }}">Mérkőzések</a>
-<!--
-<a href="{ route('game.teams') }}">Csapatok</a>
-<a href="{ route('game.table') }}">Tabella</a>
-<a href="{ route('game.favourites') }}">Kedvenceim</a>
--->
+<x-guest-layout :activeGames=$activeGames>
+    <div class="py-4 px-6 mt-8 bg-gray-100 rounded-lg">
+        <p class="text-lg font-medium text-gray-800">Üdvözöljük a Fikcionális labdarúgó-bajnokság hivatalos oldalán!</p>
+        <p class="mt-2 text-gray-700">Ez az oldal azért jött létre, hogy az érdeklődők minden szükséges információt megtaláljanak a bajnoksággal kapcsolatban. Itt tájékozódhat a bajnokságon résztvevő csapatokról, és az elért eredményekről.</p>
+    </div>
+</x-guest-layout>

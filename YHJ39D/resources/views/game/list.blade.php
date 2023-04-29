@@ -1,80 +1,42 @@
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+<x-guest-layout :activeGames=$activeGames>
 
-<h1>Fikcionális labdarúgó-bajnokság meccsei</h1>
 
-<h2>Folyamatban lévő meccsek</h2>
-<div class="grid grid-cols-3 gap-3">
-    @foreach ($activeGames as $game)
-        <table class="mx-auto border border-gray-400 col-span-3 lg:col-span-1">
-            <tr>
-                <td rowspan="3" class="text-center">
-                    @if ($game->homeTeam->image == null)
-                        <img style="width: 100px; height: 100px" src="https://via.placeholder.com/150" alt="{{ $game->homeTeam->name }}">
-                    @else
-                        <img style="width: 100px; height: 100px" src="{{ $game->homeTeam->image }}" alt="{{ $game->homeTeam->name }}">
-                    @endif
-                </td>
-                <td>Kezdés: {{ $game->start }}</td>
-                <td rowspan="3" class="text-center">
-                    @if ($game->awayTeam->image == null)
-                        <img style="width: 100px; height: 100px" src="https://via.placeholder.com/150" alt="{{ $game->homeTeam->name }}">
-                    @else
-                        <img style="width: 100px; height: 100px" src="{{ $game->awayTeam->image }}" alt="{{ $game->homeTeam->name }}">
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center">Aktuális eredmény:</td>
-            </tr>
-            <tr>
-                
-                <td class="text-center">{{ $game->homeTeamScore }} : {{ $game->awayTeamScore }}</td>
-                
-            </tr>
-            <tr>
-                <td class="text-center">{{ $game->homeTeam->shortname }}</td>
-                <td class="text-center"><a href="{{ route('games.show', ['game' => $game]) }}">Megtekintés</a></td>
-                <td class="text-center">{{ $game->awayTeam->shortname }}</td>
-            </tr>
-        </table>
-@endforeach
-</div>
-
-<h2>Elkövetkező és már lezárult meccsek</h2>
-<div class="grid grid-cols-3 gap-3">
+<h2 class="text-xl font-bold mb-4">Elkövetkező és már lezárult mérkőzések:</h2>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
     @foreach ($notActiveGames as $game)
-        <table class="mx-auto border border-gray-400 col-span-3 lg:col-span-1">
-            <tr>
-                <td rowspan="2" class="text-center">
-                    @if ($game->homeTeam->image == null)
-                        <img style="width: 100px; height: 100px" src="https://via.placeholder.com/150" alt="{{ $game->homeTeam->name }}">
-                    @else
-                        <img style="width: 100px; height: 100px" src="{{ $game->homeTeam->image }}" alt="{{ $game->homeTeam->name }}">
-                    @endif
-                </td>
-                <td>Kezdés: {{ $game->start }}</td>
-                <td rowspan="2" class="text-center">
-                    @if ($game->awayTeam->image == null)
-                        <img style="width: 100px; height: 100px" src="https://via.placeholder.com/150" alt="{{ $game->homeTeam->name }}">
-                    @else
-                        <img style="width: 100px; height: 100px" src="{{ $game->awayTeam->image }}" alt="{{ $game->homeTeam->name }}">
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                @if ( $game->finished)
-                    <td class="text-center">Eredmény:</td>
+    <div class="border border-gray-400 rounded-lg overflow-hidden">
+        <div class="flex justify-center items-center bg-gray-100 py-3">
+            <div class="w-1/3 text-center">
+                @if ($game->homeTeam->image == null)
+                <img class="w-16 h-16 object-cover rounded-full mx-auto" src="https://via.placeholder.com/150" alt="{{ $game->homeTeam->name }}">
                 @else
-                    <td></td>
+                <img class="w-16 h-16 object-cover rounded-full mx-auto" src="{{ $game->homeTeam->image }}" alt="{{ $game->homeTeam->name }}">
                 @endif
-            </tr>
-            <tr>
-                <td class="text-center">{{ $game->homeTeam->shortname }}</td>
-                <td class="text-center">{{ $game->homeTeamScore }} : {{ $game->awayTeamScore }}</td>
-                <td class="text-center">{{ $game->awayTeam->shortname }}</td>
-            </tr>
-        </table>
-@endforeach
+                <p class="font-semibold">{{ $game->homeTeam->shortname }}</p>
+            </div>
+            <div class="w-1/3 text-center">
+                <p class="text-gray-600">Kezdés:</p>
+                <p class="font-semibold">{{ $game->start }}</p>
+                @if ( $game->finished)
+                    <p class="font-semibold">Eredmény: {{ $game->homeTeamScore }} : {{ $game->awayTeamScore }}</p>
+                @else 
+                    <p class="font-semibold">Még nem kezdődött el</p>
+                @endif
+                <a href="{{ route('games.show', ['game' => $game]) }}" class="text-blue-500 hover:underline">Megtekintés</a>
+            </div>
+            <div class="w-1/3 text-center">
+                @if ($game->awayTeam->image == null)
+                <img class="w-16 h-16 object-cover rounded-full mx-auto" src="https://via.placeholder.com/150" alt="{{ $game->awayTeam->name }}">
+                @else
+                <img class="w-16 h-16 object-cover rounded-full mx-auto" src="{{ $game->awayTeam->image }}" alt="{{ $game->awayTeam->name }}">
+                @endif
+                <p class="font-semibold">{{ $game->awayTeam->shortname }}</p>
+            </div>
+        </div>
+    </div>
+    @endforeach
 </div>
 
 {{ $notActiveGames -> links() }}
+
+</x-guest-layout>

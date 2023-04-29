@@ -9,6 +9,7 @@ use App\Models\Game;
 use App\Models\Player;
 use App\Models\Team;
 use App\Models\User;
+use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
@@ -40,7 +41,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $games = collect();
-        $gameCount = rand(100, 300);
+        $gameCount = rand(25, 50);
         for ($i = 1; $i <= $gameCount; $i++)
         {
             $team1 = $teams->random();
@@ -55,6 +56,8 @@ class DatabaseSeeder extends Seeder
         $events = collect();
         foreach ($games as $game)
         {
+            if ($game->started > Carbon::now()) { continue; }
+            
             $eventCount = rand(10, 20);
             for ($i = 1; $i <= $eventCount; $i++)
             {
