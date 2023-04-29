@@ -15,46 +15,50 @@
     <div class="grid grid-cols-1 gap-4">
         <div class="max-w-2xl mx-auto mt-8">
             <h2 class="text-3xl font-bold mb-2">Mérkőzés adatok:</h2>
-            <ul class="list-disc pl-6">
-                <li class="mb-1">ID: {{ $game->id }}</li>
-                <li class="mb-1">Kezdési idő: {{ $game->start }}</li>
-                <li class="mb-1">Befejezve: {{ $game->finished ? 'Igen' : 'Nem' }}</li>
-                <li class="mb-1">Hazai csapat: {{ $game->homeTeam->name }}</li>
-                <li class="mb-1">Vendég csapat: {{ $game->awayTeam->name }}</li>
-                @if ($game->start < now())
-                    <li class="mb-1">Eredmény: {{ $game->homeTeamScore }} - {{ $game->awayTeamScore }}</li>
-                @else
-                    <li class="mb-1">Eredmény: Még nem kezdődött el</li>
-                @endif
-            </ul>
+            <div class="grid grid-cols-1 gap-6">
+                <ul class="list-disc pl-6 shadow-md rounded-md p-4 bg-gray-100">
+                    <li class="mb-1">ID: {{ $game->id }}</li>
+                    <li class="mb-1">Kezdési idő: {{ $game->start }}</li>
+                    <li class="mb-1">Befejezve: {{ $game->finished ? 'Igen' : 'Nem' }}</li>
+                    <li class="mb-1">Hazai csapat: {{ $game->homeTeam->name }}</li>
+                    <li class="mb-1">Vendég csapat: {{ $game->awayTeam->name }}</li>
+                    @if ($game->start < now())
+                        <li class="mb-1">Eredmény: {{ $game->homeTeamScore }} - {{ $game->awayTeamScore }}</li>
+                    @else
+                        <li class="mb-1">Eredmény: Még nem kezdődött el</li>
+                    @endif
+                </ul>
+            </div>
             <h3 class="text-2xl font-bold mt-4 mb-2">Események:</h3>
-            <ul class="list-disc pl-6">
-                @foreach($game->events->sortByDesc('minute') as $event)
-                    <li class="mb-1">
-                        @can('delete', $event)
-                        @if ($game->start < now() && !$game->finished)
-                            <form action="{{ route('events.destroy', ['event' => $event]) }}" method="POST" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-500 hover:underline font-bold">Törlés</button>
-                            </form>
-                        @endif
-                        @endcan
-                        {{ $event->minute }}. perc, {{ $event->player->team->name }}, {{ $event->type }}, {{ $event->player->name }}
-                    </li>
-                @endforeach
-            </ul>
+            <div class="grid grid-cols-1 gap-6">
+                <ul class="list-disc pl-6 shadow-md rounded-md p-4 bg-gray-100">
+                    @foreach($game->events->sortByDesc('minute') as $event)
+                        <li class="mb-1">
+                            @can('delete', $event)
+                            @if ($game->start < now() && !$game->finished)
+                                <form action="{{ route('events.destroy', ['event' => $event]) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-500 hover:underline font-bold">Törlés</button>
+                                </form>
+                            @endif
+                            @endcan
+                            {{ $event->minute }}. perc, {{ $event->player->team->name }}, {{ $event->type }}, {{ $event->player->name }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
 
-            <form action="{{ route('games.finish', $game) }}" method="POST">
-                @csrf
-                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Meccs lezárása</button>
-            </form>
 
-            @error('game_id')
-                <div class="text-red-500 mt-2 text-sm">
-                    {{ $message }}
-                </div>
-            @enderror
+            @can('finish', $game)
+            @if ($game->start < now() && !$game->finished)
+                <form action="{{ route('games.finish', $game) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Meccs lezárása</button>
+                </form>
+            @endif
+            @endcan
+            
             @can('create', App\Models\Event::class)
             @if ($game->start < now() && !$game->finished)
             <h3 class="text-2xl font-bold mt-4 mb-2">Új esemény rögzítése:</h3>

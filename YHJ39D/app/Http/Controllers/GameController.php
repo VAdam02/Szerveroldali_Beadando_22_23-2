@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Game;
 
@@ -61,12 +62,18 @@ class GameController extends Controller
 
     public function finish(Game $game)
     {
+        if (!(Auth::check() && Auth::user()->can('finish', $game)))
+        {
+            Session::flash('error', 'Nincs jogosultságod a mérkőzés lezárásához');
+            return redirect()->route('games.show', ['game' => $game]);
+        }
+
         if ($game->finished)
         {
             Session::flash('error', 'A mérkőzés már lezárásra került');
             return redirect()->route('games.show', ['game' => $game]);
         }
-        
+
         $game->finished = true;
         $game->save();
         Session::flash('success', 'A mérkőzés sikeresen lezárva');
