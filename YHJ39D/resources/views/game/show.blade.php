@@ -1,4 +1,4 @@
-<x-guest-layout :activeGames=$activeGames>
+<x-withGames-layout :activeGames=$activeGames>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div class="max-w-2xl mx-auto mt-8">
             <h2 class="text-3xl font-bold mb-2">Mérkőzés adatok:</h2>
@@ -22,5 +22,4 @@
             </ul>
         </div>
     </div>
-
-</x-guest-layout>
+</x-withGames-layout>
