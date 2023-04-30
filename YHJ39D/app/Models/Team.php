@@ -14,9 +14,14 @@ class Team extends Model
         return $this->hasMany(Player::class);
     }
 
-    public function games()
+    public function gameAsHome()
     {
-        return $this->hasMany(Game::class, 'home_team_id')->orWhere('away_team_id', $this->id);
+        return $this->hasMany(Game::class, 'home_team_id');
+    }
+
+    public function gameAsAway()
+    {
+        return $this->hasMany(Game::class, 'away_team_id');
     }
 
     public function users()

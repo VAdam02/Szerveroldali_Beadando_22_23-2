@@ -14,22 +14,6 @@ class GamePolicy
     }
 
     /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Game $game): bool
-    {
-        //
-    }
-
-    /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
@@ -38,7 +22,7 @@ class GamePolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can edit the model.
      */
     public function edit(User $user, Game $game): bool
     {
@@ -51,21 +35,5 @@ class GamePolicy
     public function delete(User $user, Game $game): bool
     {
         return $user->is_admin;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Game $game): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Game $game): bool
-    {
-        //
     }
 }

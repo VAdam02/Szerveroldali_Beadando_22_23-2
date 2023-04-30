@@ -37,11 +37,11 @@
             </div>
             <div class="flex justify-center space-x-6 mt-4">
                 <a href="{{ route('home') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Főoldal</a>
-                <a href="{{ route('list') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Mérkőzések</a>
+                <a href="{{ route('games.list') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Mérkőzések</a>
                 @can('create', App\Models\Game::class)
-                <a href="{{ route('create') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Mérkőzés létrehozása</a>
+                <a href="{{ route('game.create') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Mérkőzés létrehozása</a>
                 @endcan
-                <a href="{ route('game.teams') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Csapatok</a>
+                <a href="{{ route('teams.list') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Csapatok</a>
                 <a href="{ route('game.table') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Tabella</a>
                 <a href="{ route('game.favourites') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Kedvenceim</a>
             </div>

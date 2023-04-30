@@ -50,13 +50,15 @@ class DatabaseSeeder extends Seeder
                 'home_team_id' => $team1->id,
                 'away_team_id' => $team2->id
             ]);
+            $team1->gameAsHome()->save($game);
+            $team2->gameAsAway()->save($game);
             $games->add($game);
         }
 
         $events = collect();
         foreach ($games as $game)
         {
-            if ($game->started > Carbon::now()) { continue; }
+            if ($game->start > Carbon::now()) { continue; }
             
             $eventCount = rand(10, 20);
             for ($i = 1; $i <= $eventCount; $i++)
