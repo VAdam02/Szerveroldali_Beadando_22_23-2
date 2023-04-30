@@ -39,5 +39,6 @@ Route::get('/teams/{team}/edit', [TeamController::class, 'edit'])->name('teams.e
 Route::post('/teams/{team}/edit', [TeamController::class, 'editTeam'])->name('teams.edit');
 Route::post('/teams/{team}/addPlayer', [TeamController::class, 'addPlayer'])->name('teams.addPlayer');
 Route::delete('/teams/{team}/{player}', [TeamController::class, 'destroyPlayer'])->name('teams.destroyPlayer');
+Route::get('/teams/tabella', [TeamController::class, 'tabella'])->name('teams.tabella');
 
 Auth::routes();

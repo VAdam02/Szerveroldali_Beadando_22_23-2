@@ -70,6 +70,52 @@ class TeamController extends Controller
         return view('team.edit', ['team' => $team, 'activeGames' => app(GameController::class)->activeGames()]);
     }
 
+    public function tabella()
+    {
+        $teams = Team::all()->load('gameAsHome', 'gameAsAway');
+
+        for ($i = 0; $i < count($teams); $i++)
+        {
+            $teams[$i]->games = $teams[$i]->gameAsHome->merge($teams[$i]->gameAsAway);
+            
+            $wins = 0;
+            $draws = 0;
+
+            $goalGet = 0;
+            $goalMake = 0;
+
+            foreach ($teams[$i]->games as $game)
+            {
+                $game = app(GameController::class)->getScore($game);
+
+                if ($game->start > now()) { continue; }
+                
+                if ($game->home_team_id == $teams[$i]->id)
+                {
+                    if ($game->homeTeamScore > $game->awayTeamScore) { $wins++; }
+                    else if ($game->homeTeamScore == $game->awayTeamScore) { $draws++; }
+                    $goalMake += $game->homeTeamScore;
+                    $goalGet += $game->awayTeamScore;
+                }
+                else
+                {
+                    if ($game->homeTeamScore < $game->awayTeamScore) { $wins++; }
+                    else if ($game->homeTeamScore == $game->awayTeamScore) { $draws++; }
+                    $goalMake += $game->awayTeamScore;
+                    $goalGet += $game->homeTeamScore;
+                }
+            }
+
+            $teams[$i]->points = $wins * 3 + $draws;
+            $teams[$i]->goalDif = $goalMake - $goalGet;
+        }
+
+        $teams = $teams->sortBy('name')->sortByDesc('goalDif')->sortByDesc('points');
+    
+
+        return view('team.tabella', ['teams' => $teams, 'activeGames' => app(GameController::class)->activeGames()]);
+    }
+
 
 
 
