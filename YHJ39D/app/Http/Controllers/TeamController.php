@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Team;
+use App\Models\Player;
 
 class TeamController extends Controller
 {
@@ -75,6 +76,12 @@ class TeamController extends Controller
 
     public function createTeam(Request $request)
     {
+        if (!(Auth::check() && Auth::user()->can('create', Team::class)))
+        {
+            Session::flash('error', 'Nincs jogosultságod új csapat létrehozásához');
+            return redirect()->route('teams.list');
+        }
+
         $request->validate([
             'name' => 'required|unique:teams|max:255',
             'shortname' => 'required|unique:teams|min:4|max:4',
@@ -111,6 +118,12 @@ class TeamController extends Controller
 
     public function editTeam(Request $request, Team $team)
     {
+        if (!(Auth::check() && Auth::user()->can('edit', $team)))
+        {
+            Session::flash('error', 'Nincs jogosultságod csapat szerkesztéséhez');
+            return redirect()->route('teams.show', ['team' => $team]);
+        }
+
         $request->validate([
             'name' => 'required|unique:teams|max:255',
             'shortname' => 'required|unique:teams|min:4|max:4',
@@ -141,6 +154,63 @@ class TeamController extends Controller
         $team->save();
 
         Session::flash('success', 'A csapat sikeresen szerkesztve');
+        return redirect()->route('teams.show', ['team' => $team]);
+    }
+
+    public function addPlayer(Request $request, Team $team)
+    {
+        if (!(Auth::check() && Auth::user()->can('edit', $team)))
+        {
+            Session::flash('error', 'Nincs jogosultságod játékos hozzáadásához');
+            return redirect()->route('teams.show', ['team' => $team]);
+        }
+
+        $request->validate([
+            'name' => 'required|max:255',
+            'number' => 'required|integer|min:1|max:99',
+            'birthdate' => 'required|date|before:today',
+        ],
+        [
+            'name.required' => 'A játékos nevének megadása kötelező',
+            'name.max' => 'A játékos neve túl hosszú',
+            'number.required' => 'A játékos mezszámának megadása kötelező',
+            'number.integer' => 'A játékos mezszáma csak szám lehet',
+            'number.min' => 'A játékos mezszáma nem lehet kisebb, mint 1',
+            'number.max' => 'A játékos mezszáma nem lehet nagyobb, mint 99',
+            'birthdate.required' => 'A játékos születési dátumának megadása kötelező',
+            'birthdate.date' => 'A játékos születési dátuma nem megfelelő formátumú',
+            'birthdate.before' => 'A játékos születési dátuma nem lehet a mai napnál későbbi'
+        ]);
+
+        $player = new Player();
+        $player->name = $request->name;
+        $player->number = $request->number;
+        $player->birthdate = $request->birthdate;
+        $player->team_id = $team->id;
+        $player->team()->associate($team);
+        $player->save();
+
+        Session::flash('success', 'A játékos sikeresen hozzáadva a csapathoz');
+        return redirect()->route('teams.show', ['team' => $team]);
+    }
+
+    public function destroyPlayer(Team $team, Player $player)
+    {
+        if (!(Auth::check() && Auth::user()->can('edit', $team)))
+        {
+            Session::flash('error', 'Nincs jogosultságod játékos törléséhez');
+            return redirect()->route('teams.show', ['team' => $team]);
+        }
+
+        if ($player->events->count() > 0)
+        {
+            Session::flash('error', 'A játékos nem törölhető, mert van hozzárendelve esemény');
+            return redirect()->route('teams.show', ['team' => $team]);
+        }
+
+        $player->delete();
+
+        Session::flash('success', 'A játékos sikeresen törölve a csapatból');
         return redirect()->route('teams.show', ['team' => $team]);
     }
 }
