@@ -171,8 +171,8 @@ class TeamController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|unique:teams|max:255',
-            'shortname' => 'required|unique:teams|min:4|max:4',
+            'name' => 'required|unique:teams,name,' . $team->id . '|max:255',
+            'shortname' => 'required|unique:teams,shortname,' . $team->id . '|min:4|max:4',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:1024'
         ],
         [
@@ -212,13 +212,13 @@ class TeamController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|max:255',
+            'playername' => 'required|max:255',
             'number' => 'required|integer|min:1|max:99',
             'birthdate' => 'required|date|before:today',
         ],
         [
-            'name.required' => 'A játékos nevének megadása kötelező',
-            'name.max' => 'A játékos neve túl hosszú',
+            'playername.required' => 'A játékos nevének megadása kötelező',
+            'playername.max' => 'A játékos neve túl hosszú',
             'number.required' => 'A játékos mezszámának megadása kötelező',
             'number.integer' => 'A játékos mezszáma csak szám lehet',
             'number.min' => 'A játékos mezszáma nem lehet kisebb, mint 1',
@@ -229,7 +229,7 @@ class TeamController extends Controller
         ]);
 
         $player = new Player();
-        $player->name = $request->name;
+        $player->name = $request->playername;
         $player->number = $request->number;
         $player->birthdate = $request->birthdate;
         $player->team_id = $team->id;
