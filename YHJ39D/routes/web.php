@@ -24,7 +24,7 @@ Route::get('/games/create', [GameController::class, 'create'])->name('games.crea
 Route::post('/games/create', [GameController::class, 'createGame'])->name('game.create');
 Route::get('/games/{game}/show', [GameController::class, 'show'])->name('games.show');
 Route::get('/games/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
-Route::put('/games/{game}/edit', [GameController::class, 'editGame'])->name('games.edit');
+Route::post('/games/{game}/edit', [GameController::class, 'editGame'])->name('games.edit');
 Route::post('/games/{game}/finish', [GameController::class, 'finish'])->name('games.finish');
 Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');
 
