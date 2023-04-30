@@ -28,7 +28,7 @@
                 @endcan
 
                 @can('edit', $game)
-                    <a href="{{ route('games.edit', $game) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                    <a href="{{ route('games.edit', $game) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Szerkesztés</a>
                 @endcan
 
                 @can('delete', $game)
@@ -36,7 +36,7 @@
                     <form action="{{ route('games.destroy', $game) }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Törlés</button>
                     </form>
                 @endif
                 @endcan

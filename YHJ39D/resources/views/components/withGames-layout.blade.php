@@ -8,7 +8,7 @@
                     @if ($game->homeTeam->image == null)
                     <img class="w-16 h-16 object-cover rounded-full mx-auto" src="https://via.placeholder.com/150" alt="{{ $game->homeTeam->name }}">
                     @else
-                    <img class="w-16 h-16 object-cover rounded-full mx-auto" src="{{ $game->homeTeam->image }}" alt="{{ $game->homeTeam->name }}">
+                    <img src="{{ Storage::url('images/' . $game->homeTeam->image) }}" class="w-16 h-16 object-cover rounded-full mx-auto" alt="{{ $game->homeTeam->name }}">
                     @endif
                     <p class="font-semibold">{{ $game->homeTeam->shortname }}</p>
                 </div>
@@ -22,7 +22,7 @@
                     @if ($game->awayTeam->image == null)
                     <img class="w-16 h-16 object-cover rounded-full mx-auto" src="https://via.placeholder.com/150" alt="{{ $game->awayTeam->name }}">
                     @else
-                    <img class="w-16 h-16 object-cover rounded-full mx-auto" src="{{ $game->awayTeam->image }}" alt="{{ $game->awayTeam->name }}">
+                    <img src="{{ Storage::url('images/' . $game->awayTeam->image) }}" class="w-16 h-16 object-cover rounded-full mx-auto" alt="{{ $game->awayTeam->name }}">
                     @endif
                     <p class="font-semibold">{{ $game->awayTeam->shortname }}</p>
                 </div>

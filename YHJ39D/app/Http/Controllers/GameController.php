@@ -13,7 +13,7 @@ class GameController extends Controller
 {
     public function getScore(Game $game)
     {
-        $game->load('homeTeam', 'awayTeam', 'events.player', 'events.player.team');
+        $game->load('events.player', 'events.player.team');
         $game->homeTeamScore = $game->events->filter(function ($event) use ($game) {
             return $event->player->team->id == $game->home_team_id && $event->type == "gól"
                 || $event->player->team->id == $game->away_team_id && $event->type == "öngól";

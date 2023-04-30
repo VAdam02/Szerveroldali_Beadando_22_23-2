@@ -9,7 +9,7 @@
                     @if ($team->image == null)
                     <img class="w-16 h-16 object-cover rounded-full mx-auto" src="https://via.placeholder.com/150" alt="{{ $team->name }}">
                     @else
-                    <img class="w-16 h-16 object-cover rounded-full mx-auto" src="{{ $team->image }}" alt="{{ $team->name }}">
+                    <img src="{{ Storage::url('images/' . $team->image) }}" class="w-16 h-16 object-cover rounded-full mx-auto" alt="{{ $team->name }}">
                     @endif
                     <p class="font-semibold">{{ $team->shortname }}</p>
                 </div>

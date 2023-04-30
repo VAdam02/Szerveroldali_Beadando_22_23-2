@@ -42,6 +42,9 @@
                 <a href="{{ route('game.create') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Mérkőzés létrehozása</a>
                 @endcan
                 <a href="{{ route('teams.list') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Csapatok</a>
+                @can('create', App\Models\Team::class)
+                <a href="{{ route('teams.create') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Csapat létrehozása</a>
+                @endcan
                 <a href="{ route('game.table') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Tabella</a>
                 <a href="{ route('game.favourites') }}" class="text-xl font-medium text-gray-800 hover:text-blue-500 transition duration-300 ease-in-out">Kedvenceim</a>
             </div>

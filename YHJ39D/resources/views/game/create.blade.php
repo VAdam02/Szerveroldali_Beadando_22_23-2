@@ -1,7 +1,7 @@
 <x-withGames-layout :activeGames="$activeGames">
     <div class="grid grid-cols-1 gap-4">
         <div class="max-w-2xl mx-auto mt-8">
-            <h3 class="text-2xl font-bold mt-4 mb-2">Mérkőzés létrehozása:</h3>
+            <h3 class="text-2xl font-bold mt-4 mb-2">Új mérkőzés létrehozása:</h3>
             <div class="grid grid-cols-1 gap-6">
                 <div class="shadow-md rounded-md p-4 bg-gray-100">
                     <form action="{{ route('games.create') }}" method="POST">
